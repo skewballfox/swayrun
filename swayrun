@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+driver=$(lspci -nnk | grep 0300 -A3 | grep -oP "(?<=driver in use: ).*")
+
+# Session
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=sway
+export XDG_CURRENT_DESKTOP=sway
+export XDG_SESSION_TYPE=wayland
+
+# Wayland stuff
+export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORM=wayland
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export SDL_VIDEODRIVER=wayland
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# GPU stuff
+driver=$(lspci -nnk | grep 0300 -A3 | grep -oP "(?<=driver in use: ).*")
+if [[ $driver == "nvidia" ]]; then
+    export GBM_BACKEND=nvidia-drm
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export WLR_NO_HARDWARE_CURSORS=1
+fi
+
+# Run sway
+exec systemd-cat --identifier=sway sway $@
