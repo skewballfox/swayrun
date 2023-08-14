@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=SwayRun
+Comment=An i3-compatible Wayland compositor
+Exec=/usr/libexec/swayrun
+Type=Application
