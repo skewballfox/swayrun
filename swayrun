@@ -19,26 +19,26 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 
 # run login shell
 if [ "x$XDG_SESSION_TYPE" = "xwayland" ] &&
-    [ "x$XDG_SESSION_CLASS" != "xgreeter" ] &&
-    [ -n "$SHELL" ] &&
-    grep -q "$SHELL" /etc/shells &&
-    ! (echo "$SHELL" | grep -q "false") &&
-    ! (echo "$SHELL" | grep -q "nologin"); then
-    if [ "$1" != '-l' ]; then
-        exec bash -c "exec -l '$SHELL' -c '$0 -l $*'"
-    else
-        shift
-    fi
+  [ "x$XDG_SESSION_CLASS" != "xgreeter" ] &&
+  [ -n "$SHELL" ] &&
+  grep -q "$SHELL" /etc/shells &&
+  ! (echo "$SHELL" | grep -q "false") &&
+  ! (echo "$SHELL" | grep -q "nologin"); then
+  if [ "$1" != '-l' ]; then
+    exec bash -c "exec -l '$SHELL' -c '$0 -l $*'"
+  else
+    shift
+  fi
 fi
 
 # GPU stuff
 driver=$(lspci -nnk | grep 0300 -A3 | grep -oP "(?<=driver in use: ).*")
 if [[ $driver == "nvidia" ]]; then
-    export GBM_BACKEND=nvidia-drm
-    export __GLX_VENDOR_LIBRARY_NAME=nvidia
-    export WLR_NO_HARDWARE_CURSORS=1
-    # add args to sway
-    sway_args+=("--unsupported-gpu", "-D", "noscanout")
+  export GBM_BACKEND=nvidia-drm
+  export __GLX_VENDOR_LIBRARY_NAME=nvidia
+  export WLR_NO_HARDWARE_CURSORS=1
+  # add args to sway
+  sway_args+=("--unsupported-gpu" "-D" "noscanout")
 fi
 
 exec systemd-cat --identifier=sway sway $@ "${sway_args[@]}"
